@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3 uid="uid://db7n555fadgbi"]
+
+[ext_resource type="ArrayMesh" uid="uid://drho1nsqbj4wu" path="res://assets/test_podval/podval_test_small.obj" id="1_wls6j"]
+[ext_resource type="Texture2D" uid="uid://d0b8u166aikgd" path="res://assets/test_podval/podval_test_small/_Polished_Concrete_New_1.jpg" id="2_wcpbv"]
+[ext_resource type="PackedScene" uid="uid://daf2gj3caw54y" path="res://environment/environment.tscn" id="3_7chvb"]
+[ext_resource type="PackedScene" uid="uid://kn6ykqolgoae" path="res://player/cat_player.tscn" id="4_11yu7"]
+[ext_resource type="PackedScene" uid="uid://bbr3tnorvuvq7" path="res://creatures/rat.tscn" id="5_nd72l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(0.366595, 0.366595, 0.366595, 1)
+albedo_texture = ExtResource("2_wcpbv")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
+size = Vector3(2, 2, 0.001)
+
+[node name="Main" type="Node3D"]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Architecture" type="Node3D" parent="World"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -50, 0, 12)
+
+[node name="PodvalTestSmall" type="MeshInstance3D" parent="World/Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.758, 1.4, 1.497)
+mesh = ExtResource("1_wls6j")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Architecture/PodvalTestSmall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Architecture/PodvalTestSmall/StaticBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Architecture"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 20, -1, 0, -19.9446)
+material_override = SubResource("StandardMaterial3D_h2yge")
+mesh = SubResource("PlaneMesh_0xm2m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Architecture/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Architecture/MeshInstance3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.04, -2.18557e-08, 0.000499606)
+shape = SubResource("BoxShape3D_1bvp3")
+
+[node name="Environment" parent="World" instance=ExtResource("3_7chvb")]
+
+[node name="cat_player" parent="." instance=ExtResource("4_11yu7")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -29.4616, 0, -21)
+
+[node name="creatures" type="Node3D" parent="."]
+
+[node name="rat" parent="creatures" instance=ExtResource("5_nd72l")]

@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://vad7ob0h4544"]
+
+[ext_resource type="Script" uid="uid://ij5s6egywdkj" path="res://tests/test_rat.gd" id="1_ihc63"]
+[ext_resource type="PackedScene" uid="uid://bbr3tnorvuvq7" path="res://creatures/rat.tscn" id="1_mah1r"]
+[ext_resource type="PackedScene" uid="uid://daf2gj3caw54y" path="res://environment/environment.tscn" id="2_8k2po"]
+[ext_resource type="PackedScene" uid="uid://dbdtabpg2yi13" path="res://tests/test_basic_space.tscn" id="4_t1g01"]
+
+[node name="test_rat" type="Node3D"]
+script = ExtResource("1_ihc63")
+
+[node name="rat" parent="." instance=ExtResource("1_mah1r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.918322, 0.395834, 0, -0.395834, 0.918322, 0, 1.68958, 4.8988)
+current = true
+
+[node name="Environment" parent="." instance=ExtResource("2_8k2po")]
+
+[node name="test_basic_space" parent="." instance=ExtResource("4_t1g01")]

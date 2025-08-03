@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://broxap58v8sf"]
+
+[ext_resource type="ArrayMesh" path="res://test_podval/podval_test_small.obj" id="1_ig7tw"]
+[ext_resource type="Texture2D" path="res://test_podval/podval_test_small/_Polished_Concrete_New_1.jpg" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://kn6ykqolgoae" path="res://player/cat_player.tscn" id="3_h2yge"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ig7tw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(0.366595, 0.366595, 0.366595, 1)
+albedo_texture = ExtResource("2_0xm2m")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_1bvp3"]
+
+[node name="Main" type="Node3D"]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Architecture" type="Node3D" parent="World"]
+
+[node name="PodvalTestSmall" type="MeshInstance3D" parent="World/Architecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.758, 1.4, 1.497)
+mesh = ExtResource("1_ig7tw")
+skeleton = NodePath("../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Architecture/PodvalTestSmall"]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Architecture/PodvalTestSmall/StaticBody3D"]
+visible = false
+shape = SubResource("ConcavePolygonShape3D_ig7tw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Architecture"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 20, -1, 0, -19.9446)
+material_override = SubResource("StandardMaterial3D_h2yge")
+mesh = SubResource("PlaneMesh_0xm2m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Architecture/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Architecture/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_1bvp3")
+
+[node name="cat_player" parent="." instance=ExtResource("3_h2yge")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -29, 0, -19.6032)
+visible = false
+speed = null
+run_speed = null
+jump_velocity = null
+gravity = null
+pitch_min = null
+pitch_max = null
+min_zoom = null
+max_zoom = null
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -33.7822, 1.33917, -22)

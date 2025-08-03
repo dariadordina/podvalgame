@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://kn6ykqolgoae"]
+
+[ext_resource type="Script" uid="uid://byls3bd06886w" path="res://player/cat_player.gd" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://b64o2v13ocraa" path="res://player/cat_2.tscn" id="2_onrkg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lreeh"]
+size = Vector3(0.150391, 0.346344, 0.492432)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lpieb"]
+radius = 0.0988939
+height = 0.637498
+
+[node name="cat_player" type="CharacterBody3D"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+script = ExtResource("1_4flbx")
+speed = null
+run_speed = null
+jump_velocity = null
+gravity = null
+pitch_min = null
+pitch_max = null
+min_zoom = null
+max_zoom = null
+
+[node name="TwistPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -0.35)
+
+[node name="PitchPivot" type="Node3D" parent="TwistPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="TwistPivot/PitchPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 4.47035e-08, 0, -4.47035e-08, 1, 0, 0.390737, 1.07603)
+current = true
+fov = 60.0
+near = 0.005
+
+[node name="RayCast3D" type="RayCast3D" parent="TwistPivot/PitchPivot"]
+transform = Transform3D(1, 1.77636e-15, 0, 0, 1, -1.49012e-08, -1.42109e-14, 1.49012e-08, 1, -9.89051e-09, 0.0292812, -0.109279)
+
+[node name="Cat2" parent="." instance=ExtResource("2_onrkg")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0.278304, -0.0270927)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00878906, 0.187271, -0.0404053)
+shape = SubResource("BoxShape3D_lreeh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, -3.82137e-15, 3.82137e-15, 4.37114e-08, 1, 0, -1, 4.37114e-08, -1.06548e-08, 0.305703, -0.121876)
+shape = SubResource("CapsuleShape3D_lpieb")

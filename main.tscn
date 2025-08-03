@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://broxap58v8sf"]
+
+[ext_resource type="PackedScene" uid="uid://db7n555fadgbi" path="res://main1.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://vad7ob0h4544" path="res://tests/test_rat.tscn" id="6_7mycd"]
+[ext_resource type="PackedScene" uid="uid://dj253r7b4u2ru" path="res://tests/test_rats_cat.tscn" id="7_272bh"]
+
+[node name="Game" type="Node3D"]
+
+[node name="Tests" type="Node3D" parent="."]
+visible = false
+
+[node name="test_rat" parent="Tests" instance=ExtResource("6_7mycd")]
+
+[node name="test_rats_cat" parent="Tests" instance=ExtResource("7_272bh")]
+
+[node name="Main" parent="." instance=ExtResource("3_h2yge")]

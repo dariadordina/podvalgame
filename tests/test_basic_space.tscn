@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=3 uid="uid://dbdtabpg2yi13"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8k2po"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_8k2po"]
+vertices = PackedVector3Array(-1.5, 0.02, -1.5, -1.5, 0.02, 1.5, 1.5, 0.02, 1.5, 1.5, 0.02, -1.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+cell_height = 0.01
+agent_height = 0.01
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ihc63"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mah1r"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qdddq"]
+size = Vector3(1.97778, 0.001, 2.03668)
+
+[node name="test_basic_space" type="Node3D"]
+
+[node name="escape_zone" type="Area3D" parent="." groups=["escape_zones"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="escape_zone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.232, 0, 10.6685)
+shape = SubResource("BoxShape3D_8k2po")
+
+[node name="escape_zone2" type="Area3D" parent="." groups=["escape_zones"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="escape_zone2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9048, 0, 2.73478)
+shape = SubResource("BoxShape3D_8k2po")
+
+[node name="escape_zone3" type="Area3D" parent="." groups=["escape_zones"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="escape_zone3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.232, 0, -12.9469)
+shape = SubResource("BoxShape3D_8k2po")
+
+[node name="escape_zone4" type="Area3D" parent="." groups=["escape_zones"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="escape_zone4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9064, 0, -12.1615)
+shape = SubResource("BoxShape3D_8k2po")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_8k2po")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+visible = false
+mesh = SubResource("PlaneMesh_ihc63")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
+mesh = SubResource("PlaneMesh_mah1r")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0098877, 0.00362253, -0.00845337)
+shape = SubResource("BoxShape3D_qdddq")

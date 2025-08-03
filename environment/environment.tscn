@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://daf2gj3caw54y"]
+
+[ext_resource type="Script" uid="uid://b7qnghp0u03w3" path="res://environment/environment.gd" id="1_8i5xt"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_1bvp3"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+
+[node name="Environment" type="Node3D"]
+script = ExtResource("1_8i5xt")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1bvp3")
+
+[node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
+
+[node name="Moon" type="DirectionalLight3D" parent="WorldEnvironment"]
