@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dj253r7b4u2ru"]
+[gd_scene load_steps=7 format=3 uid="uid://dj253r7b4u2ru"]
 
 [ext_resource type="Script" uid="uid://s1cu0vcuo1mx" path="res://tests/test_rats_cat.gd" id="1_rbfh4"]
 [ext_resource type="PackedScene" uid="uid://bbr3tnorvuvq7" path="res://creatures/rat.tscn" id="1_vk173"]
 [ext_resource type="PackedScene" uid="uid://daf2gj3caw54y" path="res://environment/environment.tscn" id="2_4q3eg"]
 [ext_resource type="PackedScene" uid="uid://kn6ykqolgoae" path="res://player/cat_player.tscn" id="3_rbfh4"]
 [ext_resource type="PackedScene" uid="uid://dbdtabpg2yi13" path="res://tests/test_basic_space.tscn" id="4_4q3eg"]
+[ext_resource type="PackedScene" uid="uid://ddeuua3tap4pl" path="res://creatures/rat_spawner.tscn" id="6_8qq1u"]
 
 [node name="test_rats_cat" type="Node3D"]
 script = ExtResource("1_rbfh4")
@@ -18,3 +19,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -11)
 
 [node name="test_basic_space" parent="." instance=ExtResource("4_4q3eg")]
+
+[node name="rat_spawner" parent="." instance=ExtResource("6_8qq1u")]
+rat_scene = ExtResource("1_vk173")

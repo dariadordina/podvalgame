@@ -1,10 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://db7n555fadgbi"]
+[gd_scene load_steps=14 format=3 uid="uid://db7n555fadgbi"]
 
 [ext_resource type="ArrayMesh" uid="uid://drho1nsqbj4wu" path="res://assets/test_podval/podval_test_small.obj" id="1_wls6j"]
 [ext_resource type="Texture2D" uid="uid://d0b8u166aikgd" path="res://assets/test_podval/podval_test_small/_Polished_Concrete_New_1.jpg" id="2_wcpbv"]
 [ext_resource type="PackedScene" uid="uid://daf2gj3caw54y" path="res://environment/environment.tscn" id="3_7chvb"]
 [ext_resource type="PackedScene" uid="uid://kn6ykqolgoae" path="res://player/cat_player.tscn" id="4_11yu7"]
+[ext_resource type="ArrayMesh" uid="uid://67ylksln6abk" path="res://assets/test_podval/podval_test_smallsolids.obj" id="4_wcpbv"]
+[ext_resource type="Script" uid="uid://bt6j60v16ie3b" path="res://tests/bug_collision_shape.gd" id="5_7chvb"]
 [ext_resource type="PackedScene" uid="uid://bbr3tnorvuvq7" path="res://creatures/rat.tscn" id="5_nd72l"]
+[ext_resource type="PackedScene" uid="uid://ddeuua3tap4pl" path="res://creatures/rat_spawner.tscn" id="8_11yu7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7chvb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
 albedo_color = Color(0.366595, 0.366595, 0.366595, 1)
@@ -15,6 +20,8 @@ albedo_texture = ExtResource("2_wcpbv")
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
 size = Vector3(2, 2, 0.001)
 
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_11yu7"]
+
 [node name="Main" type="Node3D"]
 
 [node name="World" type="Node3D" parent="."]
@@ -24,12 +31,17 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -50, 0
 
 [node name="PodvalTestSmall" type="MeshInstance3D" parent="World/Architecture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.758, 1.4, 1.497)
+visibility_range_begin_margin = 10.0
+visibility_range_end = 100.0
+visibility_range_end_margin = 1000.0
 mesh = ExtResource("1_wls6j")
 skeleton = NodePath("../../../..")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="World/Architecture/PodvalTestSmall"]
+script = ExtResource("5_7chvb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Architecture/PodvalTestSmall/StaticBody3D"]
+shape = SubResource("BoxShape3D_7chvb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Architecture"]
 transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 20, -1, 0, -19.9446)
@@ -44,9 +56,21 @@ shape = SubResource("BoxShape3D_1bvp3")
 
 [node name="Environment" parent="World" instance=ExtResource("3_7chvb")]
 
+[node name="PodvalTestSmallsolids" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -149.208, 1.42501, 20.7105)
+visible = false
+mesh = ExtResource("4_wcpbv")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/PodvalTestSmallsolids"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/PodvalTestSmallsolids/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_11yu7")
+
 [node name="cat_player" parent="." instance=ExtResource("4_11yu7")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -29.4616, 0, -21)
 
 [node name="creatures" type="Node3D" parent="."]
 
 [node name="rat" parent="creatures" instance=ExtResource("5_nd72l")]
+
+[node name="rat_spawner" parent="creatures" instance=ExtResource("8_11yu7")]

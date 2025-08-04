@@ -39,6 +39,7 @@ var base_camera_position := Vector3.ZERO
 
 # --------------------------------------------------
 func _ready() -> void:
+	add_to_group("player")
 	init_camera_pivots(twist_pivot, pitch_pivot, camera_pivot)
 	print("📷 base_camera_position:", base_camera_position)
 

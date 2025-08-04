@@ -8,4 +8,8 @@ func _ready():
 
 func _on_rat_clicked(rat: Node3D):
 	print("[GAME] Katze hat Ratte als Ziel:", rat.name)
-	cat.start_hunting(rat)   # ✅ Das müssen wir gleich ins Player-Skript einbauen
+	$cat_player.start_hunting(rat)
+	if rat.has_method("start_fleeing"):
+		rat.start_fleeing()
+	else:
+		print("[GAME][WARN] Ratte hat keine start_fleeing()-Methode!")
