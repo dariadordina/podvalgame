@@ -14,6 +14,14 @@ var wander_timer: float = 0.0
 var start_position: Vector3
 var escape_zones: Array = []
 
+@export var despawn_time := 12.0
+@export var stuck_time := 2.0
+
+var time_alive := 0.0
+var time_stuck := 0.0
+
+signal rat_despawned
+
 func _ready() -> void:
 	print("[RAT] Ready! Initialisiere bei:", global_transform.origin)
 	add_to_group("rats")
@@ -29,6 +37,24 @@ func _ready() -> void:
 	_set_random_wander_target()
 
 func _physics_process(delta: float) -> void:
+	time_alive += delta
+
+# 🟢 Falls zu lange lebt → prüfen, ob Spieler sie sieht
+	if time_alive > despawn_time and not _player_looks_at_me():
+		print("[RAT] Spieler schaut nicht → Ratte verschwindet.")
+		queue_free()
+		return
+
+	# 🟢 Falls Navigation blockiert → Despawn
+	if nav_agent and not nav_agent.is_navigation_finished():
+		time_stuck = 0.0  # Normalfall
+	else:
+		time_stuck += delta
+	if time_stuck > stuck_time:
+		print("[RAT] Keine Navigation möglich → Ratte verschwindet.")
+		queue_free()
+		return
+	
 	if fleeing:
 		print("[RAT] Fluchtmodus aktiv → Ziel:", nav_agent.target_position)
 		_move_to_target(flee_speed, delta)
@@ -40,6 +66,22 @@ func _physics_process(delta: float) -> void:
 		if wander_timer <= 0:
 			_set_random_wander_target()
 		_move_to_target(wander_speed, delta)
+
+func _player_looks_at_me() -> bool:
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return false
+
+	var camera = player.get_node_or_null("TwistPivot/PitchPivot/Camera3D")
+	if not camera:
+		return false
+
+	var to_rat = (global_transform.origin - camera.global_transform.origin).normalized()
+	var forward = -camera.global_transform.basis.z.normalized()
+	var dot = forward.dot(to_rat)
+
+	# 🟢 Wenn Ratte grob innerhalb 60° Sichtfeld ist → sichtbar
+	return dot > 0.5
 
 # -----------------------------
 func _set_random_wander_target() -> void:
@@ -99,4 +141,10 @@ func _find_escape_zones() -> void:
 # -----------------------------
 func on_eaten() -> void:
 	print("[RAT] Gefressen! → Entferne Ratte.")
+	queue_free()
+	
+
+func _despawn():
+	print("[RAT] Despawn → sende Signal an Spawner")
+	emit_signal("rat_despawned", self)
 	queue_free()

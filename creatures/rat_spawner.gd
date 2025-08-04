@@ -75,9 +75,23 @@ func _is_visible_from_camera(point: Vector3) -> bool:
 		return true  # kein Hindernis → Punkt direkt sichtbar
 	return false    # Hindernis dazwischen → Punkt ist versteckt
 
-func _spawn_rat(spawn_pos: Vector3):
+func _spawn_rat(spawn_position: Vector3 = Vector3.ZERO):
+	# Falls keine Position angegeben → generiere eine zufällige um den Player
+	if spawn_position == Vector3.ZERO:
+		var origin = player.global_transform.origin
+		var random_dir = Vector3(randf() * 2 - 1, 0, randf() * 2 - 1).normalized()
+		var distance = randf_range(min_distance, spawn_radius)
+		spawn_position = origin + random_dir * distance
+		spawn_position.y = 0.1
+
 	var rat = rat_scene.instantiate()
-	rat.global_transform.origin = spawn_pos
-	get_parent().add_child(rat)
-	rat.add_to_group("rats")
-	print("[SPAWNER] Ratte gespawnt bei:", spawn_pos)
+	rat.global_transform.origin = spawn_position
+	add_child(rat)
+
+	# Signal verbinden → sofort neuen Spawn bei Despawn
+	rat.connect("rat_despawned", Callable(self, "_on_rat_despawned"))
+	print("[SPAWNER] Neue Ratte gespawnt bei:", spawn_position)
+	
+func _on_rat_despawned(rat):
+	print("[SPAWNER] Ratte verschwunden → spawne neue.")
+	_spawn_rat()
