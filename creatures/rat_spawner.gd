@@ -105,12 +105,19 @@ func _spawn_rat(spawn_position: Vector3 = Vector3.ZERO):
 		return
 
 	var rat = rat_scene.instantiate()
+	rat.init(player)  # ✅ Setze player VOR dem add_child()
 	rat.global_transform.origin = spawn_position
 	add_child(rat)
 
 	var attack_callable = Callable(player, "_on_rat_attack")
 	if not rat.is_connected("rat_attack", attack_callable):
-		rat.connect("rat_attack", attack_callable)
+		var err = rat.connect("rat_attack", attack_callable)
+		if err == OK:
+			print("[SPAWNER] ✅ Signal 'rat_attack' erfolgreich verbunden mit cat_player")
+		else:
+			print("[SPAWNER][ERROR] ❌ Verbindung fehlgeschlagen. Fehlercode:", err)
+	else:
+		print("[SPAWNER] 🔁 Signal war bereits verbunden mit cat_player")
 
 	# Signal verbinden → sofort neuen Spawn bei Despawn
 	rat.connect("rat_despawned", Callable(self, "_on_rat_despawned"))

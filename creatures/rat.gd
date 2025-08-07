@@ -27,7 +27,11 @@ signal rat_attack(cat)
 var can_counterattack := false
 var has_counterattacked := false
 
-var player : Node3D
+var player: Node3D = null
+
+func init(player_ref: Node3D):
+	player = player_ref
+	print("[RAT] Spieler via init gesetzt:", player.name)
 
 func _ready() -> void:
 	print("[RAT] Ready! Initialisiere bei:", global_transform.origin)
@@ -41,7 +45,7 @@ func _ready() -> void:
 	else:
 		print("[RAT] NavigationAgent3D ist mit NavigationMap verbunden:", nav_agent.get_navigation_map())
 
-	player = get_tree().get_first_node_in_group("player")
+	#player = get_tree().get_first_node_in_group("player")
 	if player:
 		print("[RAT] Spielerreferenz vorhanden:", player.name)
 	else:
@@ -169,7 +173,7 @@ func _try_counterattack():
 
 	if dist < 10.0:
 		print("[RAT] ✅ Führt Gegenangriff aus!")
-		emit_signal("rat_attack", player)
+		emit_signal("rat_attack", self)
 		has_counterattacked = true
 	else:
 		print("[RAT] ❌ Zu weit entfernt zum Angreifen.")
