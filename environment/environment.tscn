@@ -18,5 +18,7 @@ script = ExtResource("1_8i5xt")
 environment = SubResource("Environment_1bvp3")
 
 [node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
+shadow_enabled = true
 
 [node name="Moon" type="DirectionalLight3D" parent="WorldEnvironment"]
+shadow_enabled = true

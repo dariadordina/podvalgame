@@ -68,7 +68,7 @@ shape = SubResource("BoxShape3D_8k2po")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="escape_zone4"]
 mesh = SubResource("BoxMesh_7r5ye")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." groups=["navmesh"]]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 navigation_mesh = SubResource("NavigationMesh_8k2po")
 

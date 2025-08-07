@@ -1,3 +1,4 @@
+class_name Rat
 extends CharacterBody3D
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
@@ -21,6 +22,12 @@ var time_alive := 0.0
 var time_stuck := 0.0
 
 signal rat_despawned
+signal rat_attack(cat)
+
+var can_counterattack := false
+var has_counterattacked := false
+
+var player : Node3D
 
 func _ready() -> void:
 	print("[RAT] Ready! Initialisiere bei:", global_transform.origin)
@@ -34,12 +41,17 @@ func _ready() -> void:
 	else:
 		print("[RAT] NavigationAgent3D ist mit NavigationMap verbunden:", nav_agent.get_navigation_map())
 
+	player = get_tree().get_first_node_in_group("player")
+	if player:
+		print("[RAT] Spielerreferenz vorhanden:", player.name)
+	else:
+		print("[RAT][WARN] Keine Spielerreferenz! Signalverbindung möglicherweise fehlerhaft.")
 	_set_random_wander_target()
 
 func _physics_process(delta: float) -> void:
 	time_alive += delta
 
-# 🟢 Falls zu lange lebt → prüfen, ob Spieler sie sieht
+	# 🟢 Falls zu lange lebt → prüfen, ob Spieler sie sieht
 	if time_alive > despawn_time and not _player_looks_at_me():
 		print("[RAT] Spieler schaut nicht → Ratte verschwindet.")
 		queue_free()
@@ -54,10 +66,11 @@ func _physics_process(delta: float) -> void:
 		print("[RAT] Keine Navigation möglich → Ratte verschwindet.")
 		queue_free()
 		return
-	
+
 	if fleeing:
-		print("[RAT] Fluchtmodus aktiv → Ziel:", nav_agent.target_position)
+		#print("[RAT] Fluchtmodus aktiv → Ziel:", nav_agent.target_position)
 		_move_to_target(flee_speed, delta)
+		_try_counterattack()
 		if nav_agent.target_position.distance_to(global_transform.origin) < 1.0:
 			print("[RAT] Fluchtziel erreicht → Ratte verschwindet!")
 			queue_free()
@@ -68,10 +81,6 @@ func _physics_process(delta: float) -> void:
 		_move_to_target(wander_speed, delta)
 
 func _player_looks_at_me() -> bool:
-	var player = get_tree().get_first_node_in_group("player")
-	if not player:
-		return false
-
 	var camera = player.get_node_or_null("TwistPivot/PitchPivot/Camera3D")
 	if not camera:
 		return false
@@ -92,19 +101,12 @@ func _set_random_wander_target() -> void:
 	print("[RAT] Neues Wanderziel:", wander_target)
 
 # -----------------------------
+
 func _move_to_target(move_speed: float, delta: float) -> void:
 	if nav_agent.is_navigation_finished():
-		#print("[RAT][DEBUG] Navigation beendet oder kein Pfad.")
 		return
 
 	var next_point = nav_agent.get_next_path_position()
-
-	# ✅ Debug: Wenn Pfadpunkt gleich aktuelle Position → kein Pfad
-	#if next_point.is_equal_approx(global_transform.origin):
-		#print("[RAT][WARN] Kein gültiger Pfad! Agent steht fest.")
-	#else:
-		#print("[RAT][DEBUG] Nächster Pfadpunkt:", next_point)
-
 	var dir = (next_point - global_transform.origin).normalized()
 	velocity.x = dir.x * move_speed
 	velocity.z = dir.z * move_speed
@@ -115,8 +117,10 @@ func start_fleeing() -> void:
 	print("[RAT] Fluchtmodus aktiviert!")
 	fleeing = true
 	current_speed = flee_speed
+	can_counterattack = randf() < 0.75
+	print("[RAT] Kann kontern:", can_counterattack)
 	_find_escape_zones()
-	
+
 	if escape_zones.is_empty():
 		print("[RAT][WARN] Keine EscapeZones gefunden!")
 		return
@@ -129,7 +133,6 @@ func start_fleeing() -> void:
 			min_dist = d
 	print("[RAT] Flucht gestartet → Zielzone:", closest.name, "| Distanz:", min_dist)
 	nav_agent.target_position = closest.global_transform.origin
-	fleeing = true
 
 # -----------------------------
 func _find_escape_zones() -> void:
@@ -142,9 +145,31 @@ func _find_escape_zones() -> void:
 func on_eaten() -> void:
 	print("[RAT] Gefressen! → Entferne Ratte.")
 	queue_free()
-	
 
 func _despawn():
 	print("[RAT] Despawn → sende Signal an Spawner")
 	emit_signal("rat_despawned", self)
 	queue_free()
+
+func _try_counterattack():
+	if not can_counterattack:
+		print("[RAT] ❌ Kein Gegenangriff erlaubt.")
+		return
+
+	if has_counterattacked:
+		print("[RAT] ⚠️ Bereits angegriffen.")
+		return
+
+	if not is_instance_valid(player):
+		print("[RAT] ❌ Spieler-Referenz ungültig.")
+		return
+
+	var dist = global_transform.origin.distance_to(player.global_transform.origin)
+	print("[RAT] Prüfe Angriff… Distanz zur Katze:", dist)
+
+	if dist < 10.0:
+		print("[RAT] ✅ Führt Gegenangriff aus!")
+		emit_signal("rat_attack", player)
+		has_counterattacked = true
+	else:
+		print("[RAT] ❌ Zu weit entfernt zum Angreifen.")

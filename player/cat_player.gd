@@ -1,3 +1,4 @@
+class_name CatPlayer
 extends CharacterBody3D
 
 # --- Nodes ---
@@ -9,6 +10,9 @@ extends CharacterBody3D
 @onready var model: Node3D = $Cat2
 var hunting_target: Node3D = null
 var hunting_speed := 8.0
+
+@export var max_health := 100
+var health := 80
 
 # --- Animationen ---
 const ANIM = {
@@ -28,7 +32,7 @@ const ANIM = {
 var twist := 0.0
 var pitch := 0.0
 @export var pitch_min := deg_to_rad(-20)
-@export var pitch_max := deg_to_rad(20)
+@export var pitch_max := deg_to_rad(25)
 
 # --- Kamera-Zoom ---
 var zoom_distance := 0.0
@@ -46,6 +50,9 @@ func _ready() -> void:
 	# ✅ Signale direkt vom Autoload "_InputManager" verbinden
 	_InputManager.connect("zoom_changed", Callable(self, "update_zoom"))
 	_InputManager.connect("camera_rotated", Callable(self, "_on_camera_rotated"))
+	
+	for rat in get_tree().get_nodes_in_group("rats"):
+		rat.connect("rat_attack", Callable(self, "_on_rat_attack"))
 
 # --------------------------------------------------
 func _process(delta: float) -> void:
@@ -144,8 +151,18 @@ func update_zoom(amount: float) -> void:
 	zoom_distance = clamp(amount, min_zoom, max_zoom)
 
 func _on_camera_rotated(delta_twist: float, delta_pitch: float) -> void:
+	# ⬅️➡️ Twist (Y-Rotation, keine Begrenzung)
 	twist += delta_twist
+	twist_pivot.rotation.y = twist
+
+	# ⬆️⬇️ Pitch (X-Rotation, begrenzt)
 	pitch = clamp(pitch + delta_pitch, pitch_min, pitch_max)
+	pitch_pivot.rotation.x = pitch
+
+	# 🪛 DEBUG-Ausgabe (in Grad für Lesbarkeit)
+	#var twist_deg = fmod(rad_to_deg(twist_pivot.rotation.y), 360.0)
+	#var pitch_deg = rad_to_deg(pitch_pivot.rotation.x)
+	#print("🎥 Twist Y:", twist_deg, "°  |  Pitch X:", pitch_deg, "°")
 
 # --------------------------------------------------
 # --- ANIMATIONS ---
@@ -215,3 +232,20 @@ func _handle_hunting(delta: float) -> void:
 		_play_movement_anim(true)
 
 	move_and_slide()
+
+func _on_rat_attack(rat):
+	print("[PLAYER] Katze wurde angegriffen von:", rat.name)
+	damage(5)  # später anpassen
+	
+func add_health(amount: int):
+	health = clamp(health + amount, 0, max_health)
+	print("[PLAYER] Health:", health)
+	if health <= 0:
+		_on_player_died()
+
+func damage(amount: int):
+	add_health(-amount)
+
+func _on_player_died():
+	print("[PLAYER] Katze wurde besiegt!")
+	# TODO: Game Over oder andere Reaktion

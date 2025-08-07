@@ -28,14 +28,16 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				zoom_distance += 0.3
+				zoom_distance += 0.5
 				emit_signal("zoom_changed", zoom_distance)
 			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				zoom_distance -= 0.3
+				zoom_distance -= 0.5
 				emit_signal("zoom_changed", zoom_distance)
 
 	elif event is InputEventMouseMotion:
-		emit_signal("camera_rotated", -event.relative.x * mouse_sensitivity, -event.relative.y * mouse_sensitivity)
+		var delta_x = -event.relative.x * mouse_sensitivity
+		var delta_y = -event.relative.y * mouse_sensitivity
+		emit_signal("camera_rotated", delta_x, delta_y)
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -46,30 +48,30 @@ func _process(_delta: float) -> void:
 # ✅ Klick-RayCast
 func _try_raycast_click():
 	print("[INPUT] Starte Raycast-Test")
-	
 	var camera := get_viewport().get_camera_3d()
 	if not camera:
-		print("[INPUT] Keine Kamera gefunden!")
+		print("[INPUT][ERROR] Keine Kamera gefunden!")
 		return
-	
-	# Mausposition → Ray Ursprung & Richtung
+
 	var mouse_pos = get_viewport().get_mouse_position()
-	var from = camera.project_ray_origin(mouse_pos) + Vector3.UP * 0.1  # leicht angehoben
+	var from = camera.project_ray_origin(mouse_pos)
 	var to = from + camera.project_ray_normal(mouse_pos) * 1000.0
 	print("[INPUT] Raycast gestartet → Mauspos:", mouse_pos)
-	
+
 	var space_state = camera.get_world_3d().direct_space_state
-	var result = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, to))
+	var params = PhysicsRayQueryParameters3D.create(from, to)
+	params.collision_mask = 0xFFFFFFFF  # <-- ALLE Layer testen!
 
-	# Debug-Ausgabe & Trefferprüfung
-	if not result:
-		print("[INPUT][WARN] Raycast hat nichts getroffen!")
-		return
+	var result = space_state.intersect_ray(params)
 
-	print("[INPUT] Raycast Hit:", result)
-	var hit = result.collider
-	if hit.is_in_group("rats"):
-		print("[INPUT] Treffer ist eine Ratte → Sende Signal!")
-		emit_signal("rat_clicked", hit)
+	if result and result.has("collider"):
+		var hit = result.collider
+		print("[INPUT] Raycast Hit:", result)
+
+		if hit.is_in_group("rats"):
+			print("[INPUT] Treffer ist eine Ratte → Sende Signal!")
+			emit_signal("rat_clicked", hit)
+		else:
+			print("[INPUT] Treffer:", hit.name, "→ KEINE Ratte.")
 	else:
-		print("[INPUT] Treffer:", hit.name, "→ KEINE Ratte.")
+		print("[INPUT] Kein Treffer.")

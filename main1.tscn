@@ -74,3 +74,4 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -29.46
 [node name="rat" parent="creatures" instance=ExtResource("5_nd72l")]
 
 [node name="rat_spawner" parent="creatures" instance=ExtResource("8_11yu7")]
+rat_scene = ExtResource("5_nd72l")

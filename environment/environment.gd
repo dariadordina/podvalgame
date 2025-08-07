@@ -6,7 +6,7 @@ extends Node3D
 @onready var env = $WorldEnvironment.environment
 
 # SETTINGS
-var day_length := 600.0 # 600 sec = 24 h
+var day_length := 1800.0 # 600 sec = 24 h
 var time_of_day := 0.0  
 
 func _process(delta: float) -> void:
