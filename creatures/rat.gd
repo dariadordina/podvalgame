@@ -2,7 +2,7 @@ class_name Rat
 extends CharacterBody3D
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
-#@onready var anim_player: AnimationPlayer = $AnimationPlayer   # später aktivierbar
+@onready var anim_player: AnimationPlayer = $blackrat/AnimationPlayer
 
 @export var wander_speed := 2.5 
 @export var flee_speed := 7.0
@@ -28,6 +28,11 @@ var can_counterattack := false
 var has_counterattacked := false
 
 var player: Node3D = null
+
+const ANIM_WALK = "Mammals|walk_A3"
+const ANIM_RUN  = "Mammals|run_A1"
+const ANIM_IDLE = "Mammals|idle_A3"
+
 
 func init(player_ref: Node3D):
 	player = player_ref
@@ -74,6 +79,7 @@ func _physics_process(delta: float) -> void:
 	if fleeing:
 		#print("[RAT] Fluchtmodus aktiv → Ziel:", nav_agent.target_position)
 		_move_to_target(flee_speed, delta)
+		_play_anim(ANIM_RUN)
 		_try_counterattack()
 		if nav_agent.target_position.distance_to(global_transform.origin) < 1.0:
 			print("[RAT] Fluchtziel erreicht → Ratte verschwindet!")
@@ -82,7 +88,12 @@ func _physics_process(delta: float) -> void:
 		wander_timer -= delta
 		if wander_timer <= 0:
 			_set_random_wander_target()
-		_move_to_target(wander_speed, delta)
+		
+		if nav_agent.is_navigation_finished():
+			_play_anim(ANIM_IDLE)
+		else:
+			_play_anim(ANIM_WALK)
+			_move_to_target(wander_speed, delta)
 
 func _player_looks_at_me() -> bool:
 	var camera = player.get_node_or_null("TwistPivot/PitchPivot/Camera3D")
@@ -115,6 +126,9 @@ func _move_to_target(move_speed: float, delta: float) -> void:
 	velocity.x = dir.x * move_speed
 	velocity.z = dir.z * move_speed
 	move_and_slide()
+	if dir.length() > 0.01:
+		var target_rotation = atan2(dir.x, dir.z)
+		$blackrat.rotation.y = target_rotation
 
 # -----------------------------
 func start_fleeing() -> void:
@@ -177,3 +191,7 @@ func _try_counterattack():
 		has_counterattacked = true
 	else:
 		print("[RAT] ❌ Zu weit entfernt zum Angreifen.")
+
+func _play_anim(anim_name: String) -> void:
+	if anim_player.current_animation != anim_name:
+		anim_player.play(anim_name)

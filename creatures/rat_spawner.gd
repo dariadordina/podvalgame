@@ -104,7 +104,7 @@ func _spawn_rat(spawn_position: Vector3 = Vector3.ZERO):
 		print("[SPAWNER][WARN] Spawnpunkt nicht auf NavMesh → Abbruch.")
 		return
 
-	var rat = rat_scene.instantiate()
+	var rat: Rat = rat_scene.instantiate()
 	rat.init(player)  # ✅ Setze player VOR dem add_child()
 	rat.global_transform.origin = spawn_position
 	add_child(rat)

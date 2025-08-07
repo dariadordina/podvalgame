@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bbr3tnorvuvq7"]
+[gd_scene load_steps=6 format=3 uid="uid://bbr3tnorvuvq7"]
 
 [ext_resource type="Script" uid="uid://djqhbhpis030s" path="res://creatures/rat.gd" id="1_yhxcc"]
+[ext_resource type="PackedScene" uid="uid://c2u8hnvstdyu4" path="res://assets/black-rat-free-download/source/blackrat/blackrat.fbx" id="2_xkyg3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yhxcc"]
 albedo_color = Color(0.835718, 3.22476e-06, 7.70092e-07, 1)
@@ -14,6 +15,7 @@ script = ExtResource("1_yhxcc")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.1, 0, 0, 0, -4.37114e-09, -0.1, 0, 0.1, -4.37114e-09, 0, 0, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_yhxcc")
 mesh = SubResource("CapsuleMesh_yhxcc")
 skeleton = NodePath("")
@@ -23,3 +25,6 @@ transform = Transform3D(0.5, 0, 0, 0, -2.18557e-08, -0.5, 0, 0.5, -2.18557e-08, 
 shape = SubResource("SphereShape3D_yhxcc")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="blackrat" parent="." instance=ExtResource("2_xkyg3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0222428, -0.0012691, -0.00893236)

@@ -11,12 +11,11 @@
 script = ExtResource("1_rbfh4")
 
 [node name="rat" parent="." instance=ExtResource("1_vk173")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 
 [node name="Environment" parent="." instance=ExtResource("2_4q3eg")]
 
 [node name="cat_player" parent="." instance=ExtResource("3_rbfh4")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -11)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -12)
 
 [node name="test_basic_space" parent="." instance=ExtResource("4_4q3eg")]
 
