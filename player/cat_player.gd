@@ -11,6 +11,7 @@ extends CharacterBody3D
 var hunting_target: Node3D = null
 var hunting_speed := 8.0
 
+signal health_changed(current: int, max: int)
 @export var max_health := 100
 var health := 80
 
@@ -239,6 +240,7 @@ func _on_rat_attack(rat):
 	
 func add_health(amount: int):
 	health = clamp(health + amount, 0, max_health)
+	emit_signal("health_changed", health, max_health)
 	print("[PLAYER] Health:", health)
 	if health <= 0:
 		_on_player_died()

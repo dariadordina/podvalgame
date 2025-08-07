@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://db7n555fadgbi"]
+[gd_scene load_steps=15 format=3 uid="uid://db7n555fadgbi"]
 
 [ext_resource type="ArrayMesh" uid="uid://drho1nsqbj4wu" path="res://assets/test_podval/podval_test_small.obj" id="1_wls6j"]
 [ext_resource type="Texture2D" uid="uid://d0b8u166aikgd" path="res://assets/test_podval/podval_test_small/_Polished_Concrete_New_1.jpg" id="2_wcpbv"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bt6j60v16ie3b" path="res://tests/bug_collision_shape.gd" id="5_7chvb"]
 [ext_resource type="PackedScene" uid="uid://bbr3tnorvuvq7" path="res://creatures/rat.tscn" id="5_nd72l"]
 [ext_resource type="PackedScene" uid="uid://ddeuua3tap4pl" path="res://creatures/rat_spawner.tscn" id="8_11yu7"]
+[ext_resource type="PackedScene" uid="uid://dydfybpqt7crl" path="res://UI/health_hud.tscn" id="9_nd72l"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7chvb"]
 
@@ -75,3 +76,7 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -29.46
 
 [node name="rat_spawner" parent="creatures" instance=ExtResource("8_11yu7")]
 rat_scene = ExtResource("5_nd72l")
+
+[node name="UI" type="Node3D" parent="."]
+
+[node name="HealthHUD" parent="UI" instance=ExtResource("9_nd72l")]
